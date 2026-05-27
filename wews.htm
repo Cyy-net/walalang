@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Our Journey Together</title>
+    <style>
+        /* --- INTRO SCREEN PAGE --- */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #7b1113; /* Matching romantic deep red */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Stays on top of everything */
+            padding: 20px;
+            box-sizing: border-box;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+        
+        .intro-card {
+            max-width: 400px;
+            text-align: center;
+            animation: gentlePulse 2s infinite alternate;
+        }
+        
+        .intro-msg {
+            font-family: 'Georgia', serif;
+            color: white;
+            font-size: 1.8em;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .intro-btn {
+            background-color: #f8f0e3; /* Soft cream button */
+            color: #7b1113;
+            border: none;
+            padding: 16px 36px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 30px;
+            font-family: 'Arial', sans-serif;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        
+        .intro-btn:active {
+            transform: scale(0.96);
+        }
+
+        @keyframes gentlePulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.02); }
+        }
+
+        /* --- GLOBAL STYLES & MAIN CONTENT SETUPS --- */
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #7b1113; 
+            color: white;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Main container starts invisible to let intro load smoothly */
+        .container {
+            display: none; 
+            max-width: 500px; 
+            margin: 0 auto;
+            padding-bottom: 50px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        h1 {
+            font-family: 'Brush Script MT', cursive, sans-serif;
+            font-size: 2.8em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Georgia', serif;
+            font-size: 1.6em;
+            margin-top: 40px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+            padding-bottom: 8px;
+        }
+
+        /* --- PHOTO GALLERY SECTION --- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .gallery img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover; 
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- INTERACTIVE WEDDING GAME SECTION --- */
+        .game-section {
+            background-color: #f8f0e3; 
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 40px;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-section h2 {
+            color: #7b1113;
+            border-bottom: 1px dashed rgba(123, 17, 19, 0.3);
+            margin-top: 10px;
+        }
+        
+        /* --- VENUE & MARBLE AISLE DESIGN --- */
+        .wedding-venue {
+            position: relative;
+            height: 380px;
+            background: linear-gradient(180deg, #fffdf9 0%, #f1e9db 100%); 
+            border: 3px solid #d4af37; 
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.3), 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .red-carpet {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95px;
+            height: 100%;
+            background: linear-gradient(90deg, #85181a 0%, #b82327 50%, #85181a 100%); 
+            border-left: 3px double #d4af37;
+            border-right: 3px double #d4af37;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+            z-index: 1;
+        }
+
+        .ambient-candles {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 80%;
+            top: 10%;
+            font-size: 1.1em;
+            z-index: 2;
+            opacity: 0.7;
+        }
+        .ambient-candles.left { left: 5%; }
+        .ambient-candles.right { right: 5%; }
+        
+        /* --- DYNAMIC TULIP STYLE --- */
+        .blooming-tulip {
+            position: absolute;
+            z-index: 3;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            transform-origin: bottom center;
+            animation: tulipSway 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes tulipSway {
+            0% { transform: scale(1) rotate(-3deg); }
+            100% { transform: scale(1.05) rotate(3deg); }
+        }
+        
+        /* --- CHARACTERS --- */
+        .character {
+            position: absolute;
+            font-size: 3.2em; 
+            left: 50%;
+            transform: translateX(-50%);
+            transition: bottom 0.4s ease-out; 
+            z-index: 10;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
+        
+        .me { top: 15px; } 
+        .you { bottom: 15px; } 
+        
+        /* --- INTERACTION BUTTONS & TEXT --- */
+        .walk-btn {
+            background-color: #a71e22;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 30px;
+            font-family: 'Arial', sans-serif;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            width: 80%;
+            max-width: 300px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent; 
+            transition: transform 0.1s;
+        }
+        
+        .walk-btn:active { transform: scale(0.98); }
+        
+        .game-message {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #a71e22;
+            margin-top: 15px;
+            min-height: 35px;
+            font-family: 'Brush Script MT', cursive, sans-serif;
+        }
+
+        /* --- AUTOMATIC VOWS SECTION --- */
+        .vows-section {
+            display: none; 
+            opacity: 0;
+            background-color: #f8f0e3; 
+            color: #333;
+            padding: 30px 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: left;
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 2px solid #d4af37; 
+            transition: opacity 1.5s ease-in-out;
+        }
+        
+        .vows-section h3 {
+            font-family: 'Brush Script MT', cursive, sans-serif;
+            color: #7b1113;
+            margin-top: 0;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .vows-p {
+            font-size: 1.05em;
+            margin-bottom: 15px;
+            text-indent: 20px;
+            color: #222;
+        }
+        
+        .vows-sign {
+            text-align: right;
+            font-weight: bold;
+            color: #7b1113;
+            font-size: 1.2em;
+            margin-top: 25px;
+            font-family: 'Brush Script MT', cursive, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<!-- FIRST PAGE INTRO SCREEN -->
+<div class="intro-screen" id="introScreen">
+    <div class="intro-card">
+        <p class="intro-msg">before we start. i want you to wear the guitar string ring i gave you...</p>
+        <button class="intro-btn" onclick="revealMainJourney()">Doned</button>
+    </div>
+</div>
+
+<!-- MAIN COHESIVE CONTENT CONTAINER (Hidden until Intro Button Tapped) -->
+<div class="container" id="mainContent">
+    
+    <h1>Surprise<br>My Love!</h1>
+    <div class="subtitle">loveu reecacakes</div>
+
+    <h2>missing our moments</h2>
+    <div class="gallery">
+        <img src="pic1.jpeg" alt="Memory 1">
+        <img src="pic2.jpeg" alt="Memory 2">
+        <img src="pic3.jpg" alt="Memory 3">
+        <img src="pic4.jpg" alt="Memory 4">
+    </div>
+
+    <audio id="wedding-song" loop>
+        <source src="timu.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="game-section" id="gameSection">
+        <h2>Walk To Me</h2>
+        <p style="font-size: 0.95em; color: #555; margin-bottom: 15px;">Tap the button below to take your steps down the aisle.</p>
+        
+        <div class="wedding-venue" id="weddingVenue">
+            <div class="red-carpet"></div>
+            
+            <div class="ambient-candles left"><span>🕯️</span><span>🕯️</span><span>🕯️</span></div>
+            <div class="ambient-candles right"><span>🕯️</span><span>🕯️</span><span>🕯️</span></div>
+            
+            <div class="character me" id="groom">🤵‍♀️</div>
+            <div class="character you" id="bride">👰‍♀️</div>
+        </div>
+
+        <button class="walk-btn" id="walkBtn" onclick="takeStep()">Take a Step 🤍</button>
+        <p id="game-message" class="game-message"></p>
+    </div>
+
+    <div class="vows-section" id="vowsSection">
+        <h3>My Vow to You</h3>
+        
+        <p class="vows-p">My Love, My Ms. Beautiful, My Madam baby, My Sweetheart, My Darling, My Sweetipie, and My Honeybear
+
+,</p>
+        
+        <p class="vows-p">Dati, I really didn’t believe in greatest love. I thought it was just a childish thing. But then I found you. I never expected that a love this great could actually exist. Pinakilala mo sa akin ang tunay na kahulugan ng pag-ibig. Pinaramdam mo sa akin na I don’t need to question my worth anymore, kasi wala kang hinanap na kulang sa akin. Pero hindi mo alam, ikaw ang bumuo sa akin. You made me feel like I am worth choosing, and you made me see my own value.</p>
+        
+        <p class="vows-p">I promise to cherish you every single moment of our lives. I can't wait to marry you in real life, to finally build the future we’ve been dreaming of. I promise to build a home with you. walang sigawan, walang sakitan, at walang tinatagong sikreto sa isa’t isa. Isang tahanan na puno ng kapayapaan, pagmamahal, at ingay ng mga pusa natin habang sabay tayong tumatanda. Gusto kong maging kakampi mo sa lahat. Gusto ko na ako ang unang tatakbuhan mo tuwing may problema ka.</p>
+        
+        <p class="vows-p">I vow to support you in everything, to love you at your best or your worst, your highs or your lowest, your brightest days, or your darkest nights. Kakampi mo ako kapag pagod ka na, at ako ang magiging pahinga mo kapag masyado nang maingay ang mundo.</p>
+
+        <div class="vows-sign">With all my love, forever yours — Gly</div>
+    </div>
+
+</div>
+
+<script>
+    let bridePosition = 15; 
+    const destination = 265; 
+    const bride = document.getElementById('bride');
+    const message = document.getElementById('game-message');
+    const walkBtn = document.getElementById('walkBtn');
+    const song = document.getElementById('wedding-song');
+    const vowsSection = document.getElementById('vowsSection');
+    const venue = document.getElementById('weddingVenue');
+    
+    const thoughts = [
+        "With every step you take...",
+        "My heart beats a little faster, dreaming of the day this becomes our real-life reality.",
+        "Thinking of everything we've shared across the distance.",
+        "And looking forward to the day we say 'I do' for real.",
+        "I love you so much Honey bear",
+        "Almost there..."
+    ];
+    let stepCount = 0;
+
+    // JavaScript to transition from Intro Cover Page to Main Site smoothly
+    function revealMainJourney() {
+        const intro = document.getElementById('introScreen');
+        const main = document.getElementById('mainContent');
+        
+        // Hide cover smoothly
+        intro.style.opacity = '0';
+        
+        setTimeout(() => {
+            intro.style.display = 'none'; // Clear from viewport rendering
+            main.style.display = 'block'; // Make container active
+            
+            // Trigger beautiful fade-in entry for main contents
+            setTimeout(() => {
+                main.style.opacity = '1';
+            }, 50);
+        }, 800);
+    }
+
+    function takeStep() {
+        if (song.paused) {
+            song.play().catch(function(error) {
+                console.log("Audio play waiting on hardware flag: ", error);
+            });
+        }
+
+        if (bridePosition < destination) {
+            bridePosition += 42; 
+            bride.style.bottom = bridePosition + 'px';
+            
+            spawnTulipsAlongAisle();
+
+            if (stepCount < thoughts.length) {
+                message.textContent = thoughts[stepCount];
+            }
+            stepCount++;
+
+            if (bridePosition >= destination) {
+                message.innerHTML = "Yes, a million times yes!";
+                walkBtn.style.display = 'none'; 
+                triggerConfetti(); 
+                
+                setTimeout(revealVows, 1200);
+            }
+        }
+    }
+
+    function spawnTulipsAlongAisle() {
+        for (let i = 0; i < 6; i++) {
+            const tulip = document.createElement('div');
+            tulip.className = 'blooming-tulip';
+            
+            tulip.textContent = Math.random() > 0.4 ? '🌷' : '🌷🌿';
+            
+            const isLeft = Math.random() > 0.5;
+            const randomX = isLeft ? (Math.random() * 22 + 3) : (Math.random() * 22 + 75); 
+            const randomY = Math.random() * 88 + 2; 
+            
+            tulip.style.left = randomX + '%';
+            tulip.style.bottom = randomY + '%';
+            tulip.style.fontSize = (Math.random() * 0.4 + 1.2) + 'em';
+            
+            tulip.style.opacity = '0';
+            tulip.style.transform = 'scale(0)';
+            tulip.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            
+            venue.appendChild(tulip);
+            
+            setTimeout(() => {
+                tulip.style.opacity = '1';
+                tulip.style.transform = 'scale(1)';
+            }, 10);
+        }
+    }
+
+    function revealVows() {
+        vowsSection.style.display = 'block';
+        setTimeout(() => {
+            vowsSection.style.opacity = '1';
+            vowsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+    }
+
+    function triggerConfetti() {
+        const elements = ['✨', '💖', '🎉', '🌷', '❤️'];
+        
+        for(let i = 0; i < 25; i++) {
+            let spark = document.createElement('div');
+            spark.textContent = elements[Math.floor(Math.random() * elements.length)];
+            spark.style.position = 'absolute';
+            spark.style.left = Math.random() * 90 + '%';
+            spark.style.top = Math.random() * 85 + '%';
+            spark.style.fontSize = (Math.random() * 0.8 + 1) + 'em';
+            spark.style.zIndex = '4';
+            venue.appendChild(spark);
+        }
+    }
+</script>
+
+</body>
+</html>
